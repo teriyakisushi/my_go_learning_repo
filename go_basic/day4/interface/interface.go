@@ -36,6 +36,10 @@ func (this *Dog) Run() {
 	fmt.Println("the Dog is Running...")
 }
 
+/*
+* 这里需要传进一个Interface参数用来implementation
+ */
+
 func showAnimal(animal AnimalIF) {
 	animal.GetColor()
 	animal.Run()
