@@ -9,13 +9,6 @@ import (
 * interface
  */
 
-type PetIf interface {
-	getName()
-	getFull()
-	checkFull()
-	RestName()
-}
-
 type Pet struct {
 	Name string  `json:"name"`
 	Kind string  `json:"kind"`
@@ -50,9 +43,6 @@ func (p *Pet) RestName() {
 }
 
 func (p *Pet) createPet(args interface{}) {
-}
-
-func doAny(pet PetIf) {
 }
 
 func main() {
