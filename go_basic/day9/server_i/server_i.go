@@ -22,7 +22,13 @@ func newServer(IP string, port int) *Server {
 
 // 用来处理连接成功后的事务,需要的参数为连接成功后的套接字
 func (this *Server) Handler(conn net.Conn) {
-	fmt.Println("Connect Successful! Howdy tody ^_^")
+	fmt.Println("Connect Successful! ")
+	ToClientMsg := "Howdy Today ^_^"
+	_, err := conn.Write([]byte(ToClientMsg))
+	if err != nil {
+		fmt.Println("Write error!")
+		return
+	}
 }
 
 // Start Server
