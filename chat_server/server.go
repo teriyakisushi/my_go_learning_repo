@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"time"
 )
 
 /*上线服务器需要的IP & 端口*/
@@ -74,11 +75,26 @@ func (this *Server) Handler(conn net.Conn) {
 		return
 	}
 
-	user := newUser(conn)       // <--- 创建一个新用户
-	this.UserOnline(user)       // <--- 用户上线
-	go user.HandleMessage(this) // <--- 处理用户消息
+	user := newUser(conn)               // <--- 创建一个新用户
+	this.UserOnline(user)               // <--- 用户上线
+	isLive := make(chan bool)           // <--- 用来判断用户是否活跃
+	go user.HandleMessage(this, isLive) // <--- 处理用户消息
 
-	select {} //<---- 阻塞
+	for {
+		select {
+		case <-isLive:
+			// do nothing
+			// <--- 如果用户活跃，什么都不做
+		case <-time.After(time.Second * 3):
+			// <--- 如果用户10s没有活跃，就Kick TA下线
+			user.Send2User("You have been kicked out!")
+			time.Sleep(time.Second * 1)
+			close(user.chanUser) // <--- 关闭用户channel
+			conn.Close()         // <--- 关闭连接
+			return
+
+		} //<---- 阻塞
+	}
 }
 
 /*用户上线*/

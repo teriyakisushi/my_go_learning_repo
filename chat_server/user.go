@@ -32,7 +32,7 @@ func (user *User) Send2User(msg string) {
 	user.chanUser <- msg
 }
 
-func (user *User) HandleMessage(server *Server) {
+func (user *User) HandleMessage(server *Server, isLive chan bool) {
 	buf := make([]byte, 4096)
 	for {
 		n, err := user.conn.Read(buf)
@@ -69,5 +69,6 @@ func (user *User) HandleMessage(server *Server) {
 		} else {
 			server.Broadcast(user, msg)
 		}
+		isLive <- true
 	}
 }
